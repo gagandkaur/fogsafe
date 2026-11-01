@@ -1,0 +1,24 @@
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,sans-serif}
+.app{display:flex;height:100vh}.mapwrap{position:relative;flex:1;min-width:0}.map{height:100%}.map.empty{display:grid;place-items:center;background:#e2e8f0;color:#334155;padding:20px;text-align:center}
+.panel{width:340px;overflow:auto;padding:10px;background:#0f172a;color:#e2e8f0;display:flex;flex-direction:column;gap:10px}
+.card{background:#1e293b;border-radius:12px;padding:10px}
+.status{border-left:8px solid #22c55e}.status.YELLOW{border-color:#eab308}.status.RED{border-color:#ef4444}
+.status.CRITICAL{border-color:#b91c1c;background:#450a0a}
+.big{font-size:26px;font-weight:700}.small{font-size:12px;color:#94a3b8;margin:4px 0}
+.row{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+button{background:#334155;color:#fff;border:0;border-radius:8px;padding:6px 10px;cursor:pointer}
+button.on{background:#2563eb}.li{padding:6px 0;border-bottom:1px solid #334155;cursor:pointer;font-size:13px}
+.li.sel{background:#0f172a}.pill{margin-left:6px;padding:1px 6px;border-radius:8px;font-size:11px;color:#000}
+.pill.GREEN{background:#22c55e}.pill.YELLOW{background:#eab308}.pill.RED{background:#ef4444}.pill.CRITICAL{background:#b91c1c;color:#fff}
+.pill.dig{background:#38bdf8}.x{float:right;padding:0 6px}
+.user-marker{font-size:26px;color:#2563eb;text-align:center;line-height:28px}
+.veh{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;border:2px solid #fff;font-size:15px}
+.veh.digital{border:3px dashed #0ea5e9;border-radius:6px;transform:rotate(45deg)}
+.veh.sel{outline:3px solid #2563eb}.blink{animation:b .5s infinite alternate}@keyframes b{to{opacity:.35}}
+.banner{position:absolute;top:10px;left:10px;right:10px;z-index:1000;padding:10px 14px;border-radius:10px;font-weight:700;color:#fff;background:#2563eb}.banner.RED{background:#ef4444}.banner.CRITICAL{background:#b91c1c;animation:b .5s infinite alternate}.banner.warn{background:#a16207}
+.conn{font-size:13px}.err{color:#fca5a5;font-size:12px;margin-top:6px}button.demo{background:#7c3aed}
+@media(max-width:700px){.app{flex-direction:column}.mapwrap{height:50vh;flex:none}.panel{width:100%}}
+.slab{display:block;font-size:12px;margin:6px 0}.slab input{width:100%}
+.modal-back{position:fixed;inset:0;background:rgba(0,0,0,.5);display:grid;place-items:center;z-index:2000}
+.modal{background:#1e293b;border-radius:12px;padding:16px;width:300px;max-width:90vw;color:#e2e8f0}
+.detail-row{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #334155;font-size:13px}
