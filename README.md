@@ -26,6 +26,7 @@ Phone/laptop (GPS+speed+heading) -> Socket.IO -> Backend (Node/Express)
   24h-TTL location history. If MongoDB isn't running, the backend logs a
   warning and keeps working with in-memory-only state — nothing breaks.
 - **frontend** – React + Vite + Leaflet/OpenStreetMap (no API key needed).
+- **CI/CD pipeline tested- Fogsafe
 
 ## Setup
 ```
