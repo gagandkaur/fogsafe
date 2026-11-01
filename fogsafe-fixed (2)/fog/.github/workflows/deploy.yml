@@ -1,0 +1,41 @@
+# Optional: explicit CD. Only needed if you turn OFF Render/Vercel auto-deploy.
+# Runs only after the CI workflow succeeded on main.
+name: Deploy
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+
+jobs:
+  deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy backend (Render deploy hook)
+        run: curl -fsS -X POST "${{ secrets.RENDER_DEPLOY_HOOK }}"
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Deploy frontend (Vercel)
+        working-directory: frontend
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: |
+          npm i -g vercel
+          vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
+          vercel build --prod --token="$VERCEL_TOKEN"
+          vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN"
+      - name: Post-deploy health check
+        run: |
+          for i in $(seq 1 12); do
+            curl -fs "${{ secrets.BACKEND_URL }}/api/health" && exit 0
+            sleep 10
+          done
+          echo "Deployed backend is not healthy" && exit 1

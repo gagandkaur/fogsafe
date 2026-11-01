@@ -1,0 +1,4 @@
+{
+  "compilerOptions": { "baseUrl": ".", "paths": { "@core": ["../shared/core/index.js"] }, "jsx": "react-jsx" },
+  "include": ["src"]
+}

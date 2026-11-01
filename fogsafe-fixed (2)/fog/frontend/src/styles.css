@@ -1,0 +1,420 @@
+/* FogSafe UI: flat, plain, instrument-panel look.
+   Rules: no gradients, no shadows, no blur, 4px radius, saturated colour only for risk. */
+:root {
+  --bg: #f4f4f2;
+  --surface: #ffffff;
+  --border: #c9c9c4;
+  --text: #1a1a1a;
+  --muted: #5c5c58;
+  --accent: #1f3a5f;
+  --on-accent: #ffffff;
+  /* risk fills (markers, borders, banners) */
+  --g: #2e7d32;
+  --y: #c99a00;
+  --r: #c62828;
+  --c: #8e0000;
+  /* risk as text (contrast-safe per theme) */
+  --g-text: #2e7d32;
+  --y-text: #8a6700;
+  --r-text: #c62828;
+  --c-text: #8e0000;
+  --radius: 4px;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #141414;
+    --surface: #1c1c1c;
+    --border: #3a3a3a;
+    --text: #ececec;
+    --muted: #9a9a96;
+    --accent: #8fb0d9;
+    --on-accent: #141414;
+    --g-text: #6fbf73;
+    --y-text: #e0b100;
+    --r-text: #ef6a6a;
+    --c-text: #ff8a8a;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    sans-serif;
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+}
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+/* ---------- layout ---------- */
+.app {
+  display: flex;
+  height: 100vh;
+  height: 100dvh;
+}
+.mapwrap {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+.map {
+  height: 100%;
+}
+.map.empty {
+  display: grid;
+  place-items: center;
+  background: var(--bg);
+  color: var(--muted);
+  padding: 20px;
+  text-align: center;
+}
+.panel {
+  width: 340px;
+  overflow-y: auto;
+  background: var(--surface);
+  border-left: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  font-size: 15px;
+  font-weight: 600;
+}
+.conn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--muted);
+}
+.sq {
+  width: 8px;
+  height: 8px;
+  display: inline-block;
+  background: var(--muted);
+}
+.sq.connected {
+  background: var(--g);
+}
+.sq.reconnecting {
+  background: var(--y);
+}
+.sq.offline {
+  background: var(--r);
+}
+
+/* a section of the panel */
+.card {
+  padding: 16px;
+  border-bottom: 1px solid var(--border);
+}
+.lbl {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+.small {
+  font-size: 13px;
+  color: var(--muted);
+  margin: 4px 0;
+}
+.foot {
+  margin-top: auto;
+  padding: 12px 16px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 8px 0 0;
+}
+.row:first-child {
+  margin-top: 0;
+}
+.err {
+  color: var(--r-text);
+  font-size: 13px;
+  margin-top: 8px;
+}
+
+/* ---------- controls ---------- */
+button {
+  font: inherit;
+  font-size: 14px;
+  min-height: 40px;
+  padding: 0 12px;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition:
+    background-color 150ms,
+    color 150ms;
+}
+button:hover {
+  background: var(--bg);
+}
+button.on {
+  background: var(--accent);
+  color: var(--on-accent);
+  border-color: var(--accent);
+}
+/* joined segmented buttons */
+.seg {
+  display: flex;
+}
+.seg button {
+  flex: 1;
+  border-radius: 0;
+  margin-left: -1px;
+  padding: 0 4px;
+}
+.seg button:first-child {
+  margin-left: 0;
+  border-radius: var(--radius) 0 0 var(--radius);
+}
+.seg button:last-child {
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+.chk {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 32px;
+}
+.chk input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent);
+}
+.slab {
+  display: block;
+  font-size: 13px;
+  margin: 12px 0 0;
+}
+.slab input {
+  width: 100%;
+  accent-color: var(--accent);
+}
+
+/* ---------- nearest-vehicle status ---------- */
+.status {
+  border-left: 4px solid var(--g);
+  padding: 4px 0 4px 12px;
+}
+.status.YELLOW {
+  border-color: var(--y);
+}
+.status.RED {
+  border-color: var(--r);
+}
+.status.CRITICAL {
+  border-color: var(--c);
+}
+.big {
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+/* ---------- risk words ---------- */
+.risk {
+  font-size: 13px;
+  font-weight: 600;
+}
+.risk.GREEN {
+  color: var(--g-text);
+}
+.risk.YELLOW {
+  color: var(--y-text);
+}
+.risk.RED {
+  color: var(--r-text);
+}
+.risk.CRITICAL {
+  color: var(--c-text);
+}
+
+/* ---------- vehicle list ---------- */
+.vrow {
+  display: grid;
+  grid-template-columns: 52px 1fr 52px 56px 64px;
+  align-items: center;
+  gap: 4px;
+  min-height: 40px;
+  padding: 0 8px;
+  border-bottom: 1px solid var(--border);
+  border-left: 2px solid transparent;
+  font-size: 13px;
+  cursor: pointer;
+}
+.vrow.head {
+  min-height: 28px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  cursor: default;
+}
+.vrow.sel {
+  border-left-color: var(--accent);
+  background: var(--bg);
+}
+.vrow .id {
+  font-weight: 600;
+}
+.vrow .dig {
+  color: var(--muted);
+  font-weight: 400;
+  font-size: 11px;
+  margin-left: 4px;
+}
+.x {
+  min-height: 24px;
+  padding: 0 6px;
+  font-size: 12px;
+  margin-left: 8px;
+}
+
+/* ---------- map markers ---------- */
+.user-marker {
+  font-size: 26px;
+  color: #1f3a5f; /* map tiles are light in both themes */
+  text-align: center;
+  line-height: 28px;
+}
+.veh {
+  width: 14px;
+  height: 14px;
+  border: 1px solid #fff;
+}
+.veh.digital {
+  border: 2px dashed #1a1a1a;
+  outline: 2px solid #fff;
+}
+.veh.crit {
+  width: 18px;
+  height: 18px;
+}
+.veh.sel {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ---------- banners over the map ---------- */
+.banner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  padding: 12px 16px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  background: var(--r);
+}
+.banner.CRITICAL {
+  background: var(--c);
+}
+.banner.warn,
+.banner.demo {
+  background: var(--surface);
+  color: var(--text);
+  font-weight: 400;
+  font-size: 14px;
+  border-bottom: 1px solid var(--border);
+  border-left: 4px solid var(--y);
+}
+.banner.demo {
+  border-left-color: var(--accent);
+}
+
+/* ---------- detail dialog ---------- */
+.modal-back {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: grid;
+  place-items: center;
+  z-index: 2000;
+}
+.modal {
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  width: 320px;
+  max-width: 92vw;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+.modal .row {
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+.detail-row span {
+  color: var(--muted);
+}
+.detail-row b {
+  font-weight: 600;
+  text-align: right;
+}
+
+/* ---------- mobile: map on top, panel scrolls below ---------- */
+@media (max-width: 700px) {
+  .app {
+    flex-direction: column;
+  }
+  .mapwrap {
+    height: 55%;
+    flex: none;
+  }
+  .panel {
+    width: 100%;
+    flex: 1;
+    border-left: 0;
+    border-top: 1px solid var(--border);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  button {
+    transition: none;
+  }
+}
