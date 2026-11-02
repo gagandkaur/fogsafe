@@ -6,6 +6,9 @@ import path from 'path';
 export default defineConfig({
   plugins: [react(), basicSsl()],
   resolve: { alias: { '@core': path.resolve(__dirname, '../shared/core/index.js') } },
-  server: { host: true, fs: { allow: ['..'] },
-    proxy: { '/api': 'http://localhost:4000', '/socket.io': { target: 'http://localhost:4000', ws: true } } },
+  server: {
+    host: true,
+    fs: { allow: ['..'] },
+    proxy: { '/api': 'http://localhost:4000', '/socket.io': { target: 'http://localhost:4000', ws: true } },
+  },
 });

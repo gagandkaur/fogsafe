@@ -1,6 +1,26 @@
-{ "name": "fogsafe", "private": true, "type": "module",
+{
+  "name": "fogsafe",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
-    "setup": "npm i && npm i --prefix backend && npm i --prefix frontend",
+    "setup": "npm ci && npm ci --prefix backend && npm ci --prefix frontend",
     "dev": "concurrently -n api,web -c blue,green \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\"",
-    "test": "node --test shared/core/__tests__/core.test.js" },
-  "devDependencies": { "concurrently": "^9.0.0" } }
+    "test": "node --test shared/core/__tests__/core.test.js shared/core/__tests__/ml.test.js && npm test --prefix backend",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "build": "npm run build --prefix frontend"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.0.0",
+    "concurrently": "^9.0.0",
+    "eslint": "^9.0.0",
+    "eslint-plugin-react": "^7.37.0",
+    "eslint-plugin-react-hooks": "^5.0.0",
+    "globals": "^15.0.0",
+    "prettier": "^3.3.0"
+  }
+}

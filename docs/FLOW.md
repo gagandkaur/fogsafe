@@ -1,7 +1,8 @@
 # FogSafe – Data & Event Flow
 
 ## 1. Startup / join
-1. Client calls `POST /api/auth/register` -> gets a random session token
+
+1. User registers (`POST /api/auth/register`, name + email + password) or logs in (`POST /api/auth/login`, email + password) -> gets a session token
    (no personal data attached to it).
 2. Client opens a Socket.IO connection with the token in the handshake.
 3. Server validates the token; unknown/invalid token -> connection rejected.
@@ -9,6 +10,7 @@
    (e.g. `V512`) -> replies `vehicle:joined` with `{ vehicleId, config }`.
 
 ## 2. Location update loop (every ~1s while joined)
+
 ```
 Client: GPS fix (or simulated step)
    -> emits vehicle:update { lat, lng, speedKmh, heading, accuracyM, timestamp }
@@ -27,6 +29,7 @@ Client:
 ```
 
 ## 3. Disconnection / leave
+
 - Explicit: client emits `vehicle:leave`.
 - Implicit: socket `disconnect` (app closed, network lost).
 - Either way: server removes the vehicle from the store and immediately
@@ -37,6 +40,7 @@ Client:
   the driver is never shown a stale position as if it were current.
 
 ## 4. Demo Mode (scripted, for presentations)
+
 `simulation/demoScenario.js` is a list of `{ t, msg, run }` steps fired with
 `setTimeout` after pressing "Demo mode": start with visibility=200/fog off ->
 fog on -> visibility drops to 60 -> a vehicle spawns 180m ahead (beyond visual

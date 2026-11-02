@@ -15,10 +15,15 @@ export function analyzeVehicle(user, other, visibilityM, cfg = defaultConfig) {
   const risk = riskLevel({ dist, ttc, closing, relevance, visibilityM }, cfg);
   const acc = Math.max(user.accuracyM ?? 0, other.accuracyM ?? 0);
   return {
-    vehicleId: other.vehicleId, distanceM: Math.round(dist), direction, relevance,
-    closingSpeedMs: +closing.toFixed(2), approaching: closing > cfg.minClosingSpeedMs,
+    vehicleId: other.vehicleId,
+    distanceM: Math.round(dist),
+    direction,
+    relevance,
+    closingSpeedMs: +closing.toFixed(2),
+    approaching: closing > cfg.minClosingSpeedMs,
     ttcS: ttc == null ? null : +ttc.toFixed(1),
-    visual: visualStatus(dist, visibilityM), risk,
+    visual: visualStatus(dist, visibilityM),
+    risk,
     lowConfidence: acc > dist / 3,
   };
 }

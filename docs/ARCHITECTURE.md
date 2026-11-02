@@ -1,6 +1,7 @@
 # FogSafe – Architecture
 
 ## Overview
+
 FogSafe uses smartphones/laptops as prototype "vehicle devices". Each device gets GPS
 location, speed and heading, sends it to a backend, and receives nearby participating
 devices in return. All distance/risk math is done locally on each device using a
@@ -31,6 +32,7 @@ frontend/src/services/proximity/  BLE stub — an interface only. Browsers canno
 ```
 
 ## Why calculations run on the client, not just the server
+
 Fog visibility is a per-driver setting (each driver may set a different visibility
 estimate). The server does not know each driver's chosen visibility, so it only
 does the network-relevant job — filtering by radius and broadcasting raw neighbour
@@ -38,6 +40,7 @@ state. Each phone applies its own visibility value through the shared core to ge
 its own risk view.
 
 ## Data flow (real mode)
+
 ```
 Phone A: GPS fix -> geolocationService -> socketClient.send() -> Socket.IO
          -> backend vehicleStore (in-memory) -> broadcast to nearby sockets
@@ -47,16 +50,19 @@ Phone A: GPS fix -> geolocationService -> socketClient.send() -> Socket.IO
 ```
 
 ## Modular ingestion (future V2V/V2X)
+
 ```
    GpsAdapter ─┐
    V2vAdapter ─┼─► common VehicleState { lat, lng, speedKmh, heading,
    V2xAdapter ─┤                          accuracyM, timestamp, source }
   SensorAdapter┘
 ```
+
 Only `backend/src/adapters/*.js` needs a new file; server.js, the socket events,
 and the entire frontend are unchanged, since they only ever see VehicleState.
 
 ## Key design choices
+
 - **In-memory vehicle store, not DB, for live state.** Current position must be
   fast and fresh; MongoDB (planned) is for sessions, settings and short history,
   not the hot path.

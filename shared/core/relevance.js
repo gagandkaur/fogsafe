@@ -1,4 +1,3 @@
-import { angleDiffDeg } from './geo.js';
 // Prototype approximation from geometry + heading. NOT lane detection.
 export function classify(user, local, dist, closing, cfg) {
   const h = (user.heading * Math.PI) / 180;

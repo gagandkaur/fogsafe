@@ -6,16 +6,18 @@ does, and where the differences lie, so any future patent/novelty discussion
 starts from an honest baseline.
 
 ## Existing technology this project builds on
-| Area | What it does | Examples |
-|---|---|---|
-| GPS vehicle tracking | Tracks a vehicle's location via GNSS | Fleet tracking apps, Google Maps location sharing |
-| Connected vehicle / V2V | Vehicles exchange state (position, speed, heading) directly or via infrastructure | DSRC, C-V2X, SAE J2735 basic safety message |
-| V2X | Vehicle-to-everything (infra, pedestrians, network) | 5G-V2X, roadside units |
-| Forward collision warning | Warns of an imminent collision using onboard sensors | Radar/camera ADAS systems in production cars |
-| Cooperative perception | Vehicles/infrastructure share sensed objects, not just own state | Research literature on cooperative perception, some V2X pilots |
-| Fog/visibility-adaptive driving aids | Adjust lighting, headway, or alert distance based on measured visibility | Some ADAS fog-lamp automation, visibility sensors on highways |
+
+| Area                                 | What it does                                                                      | Examples                                                       |
+| ------------------------------------ | --------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| GPS vehicle tracking                 | Tracks a vehicle's location via GNSS                                              | Fleet tracking apps, Google Maps location sharing              |
+| Connected vehicle / V2V              | Vehicles exchange state (position, speed, heading) directly or via infrastructure | DSRC, C-V2X, SAE J2735 basic safety message                    |
+| V2X                                  | Vehicle-to-everything (infra, pedestrians, network)                               | 5G-V2X, roadside units                                         |
+| Forward collision warning            | Warns of an imminent collision using onboard sensors                              | Radar/camera ADAS systems in production cars                   |
+| Cooperative perception               | Vehicles/infrastructure share sensed objects, not just own state                  | Research literature on cooperative perception, some V2X pilots |
+| Fog/visibility-adaptive driving aids | Adjust lighting, headway, or alert distance based on measured visibility          | Some ADAS fog-lamp automation, visibility sensors on highways  |
 
 ## What FogSafe specifically does
+
 - Combines a **user-configurable or measured fog-visibility value** with
   **peer-shared GPS state** (not onboard radar/camera) to classify each nearby
   participating vehicle as within or **beyond the driver's estimated visual
@@ -32,14 +34,17 @@ starts from an honest baseline.
   limitation to avoid rather than a feature to claim.
 
 ## Technical problem addressed
+
 Existing consumer navigation apps show other users' locations (e.g. ride-hailing,
-fleet apps) but do not classify that location against the *driver's own,
-momentarily degraded, visual detection range* — the same GPS distance is either
+fleet apps) but do not classify that location against the _driver's own,
+momentarily degraded, visual detection range_ — the same GPS distance is either
 irrelevant or a hazard depending on fog density, and general navigation apps do
 not compute or surface that distinction.
 
 ## Potential differences / candidate novel mechanisms (not verified against a
+
 patent search — for internal discussion only)
+
 1. Explicit **VISUAL RANGE vs DIGITAL DETECTION RANGE** duality as the primary
    UI/UX and alerting concept, driven by a live or user-set fog-visibility value.
 2. A **prototype relevance classifier** (ahead/behind/left/right + high/
@@ -51,6 +56,7 @@ patent search — for internal discussion only)
    or audited later.
 
 ## Explicitly NOT claimed
+
 - Not claimed as first-ever, novel, or patentable as a whole.
 - Not claimed to provide lane-level accuracy.
 - Not claimed that Bluetooth alone can locate a vehicle at range.

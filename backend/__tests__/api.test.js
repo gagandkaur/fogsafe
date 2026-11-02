@@ -13,7 +13,23 @@ after(async () => {
   await ctx.close();
 });
 
-const register = async () => (await (await fetch(`${base}/api/auth/register`, { method: 'POST' })).json()).token;
+let n = 0;
+const post = (path, body, token) =>
+  fetch(`${base}${path}`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json', ...(token ? { authorization: `Bearer ${token}` } : {}) },
+    body: JSON.stringify(body ?? {}),
+  });
+const register = async () =>
+  (
+    await (
+      await post('/api/auth/register', {
+        name: 'Test User',
+        email: `t${++n}-${Date.now()}@example.com`,
+        password: 'password123',
+      })
+    ).json()
+  ).token;
 const connect = (token) =>
   new Promise((resolve, reject) => {
     const s = ioc(base, { auth: { token }, reconnection: false });
@@ -26,6 +42,50 @@ const M = 1 / 111195;
 test('health endpoint responds', async () => {
   const j = await (await fetch(`${base}/api/health`)).json();
   assert.equal(j.ok, true);
+});
+
+test('register validates name and email, and rejects duplicates', async () => {
+  assert.equal((await post('/api/auth/register', { name: '', email: 'a@b.com', password: 'password123' })).status, 400);
+  assert.equal(
+    (await post('/api/auth/register', { name: 'A', email: 'not-an-email', password: 'password123' })).status,
+    400,
+  );
+  assert.equal((await post('/api/auth/register', {})).status, 400);
+  assert.equal((await post('/api/auth/register', { name: 'A', email: 'a@b.com', password: 'short' })).status, 400);
+  const email = `dup-${Date.now()}@example.com`;
+  const r = await post('/api/auth/register', {
+    name: '  Asha   Singh ',
+    email: email.toUpperCase(),
+    password: 'password123',
+  });
+  assert.equal(r.status, 201);
+  const j = await r.json();
+  assert.equal(j.user.name, 'Asha Singh');
+  assert.equal(j.user.email, email);
+  assert.ok(j.token);
+  assert.ok(!JSON.stringify(j).includes('passwordHash'));
+  assert.equal((await post('/api/auth/register', { name: 'Other', email, password: 'password123' })).status, 409);
+});
+
+test('login works for a registered email, fails for unknown, and /me + logout work', async () => {
+  const email = `login-${Date.now()}@example.com`;
+  await post('/api/auth/register', { name: 'Login Test', email, password: 'password123' });
+  assert.equal((await post('/api/auth/login', { email: 'nobody@example.com', password: 'password123' })).status, 401);
+  assert.equal((await post('/api/auth/login', { email, password: 'wrong-password' })).status, 401);
+  assert.equal((await post('/api/auth/login', { email: 'bad', password: 'password123' })).status, 400);
+  const r = await post('/api/auth/login', { email: ` ${email.toUpperCase()} `, password: 'password123' });
+  assert.equal(r.status, 200);
+  const { token, user } = await r.json();
+  assert.equal(user.name, 'Login Test');
+  const me = await fetch(`${base}/api/auth/me`, { headers: { authorization: `Bearer ${token}` } });
+  assert.equal((await me.json()).user.email, email);
+  assert.equal((await post('/api/auth/logout', {}, token)).status, 200);
+  assert.equal((await fetch(`${base}/api/auth/me`, { headers: { authorization: `Bearer ${token}` } })).status, 401);
+  await assert.rejects(connect(token)); // logged-out token can no longer open a socket
+});
+
+test('/me requires a token', async () => {
+  assert.equal((await fetch(`${base}/api/auth/me`)).status, 401);
 });
 
 test('socket without a valid token is rejected', async () => {

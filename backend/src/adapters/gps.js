@@ -3,7 +3,8 @@ import { validCoord } from '../../../shared/core/index.js';
 export function fromGps(raw) {
   if (!raw || !validCoord(raw.lat, raw.lng)) return null;
   return {
-    lat: raw.lat, lng: raw.lng,
+    lat: raw.lat,
+    lng: raw.lng,
     speedKmh: Math.max(0, Number(raw.speedKmh) || 0),
     heading: Number.isFinite(raw.heading) ? ((raw.heading % 360) + 360) % 360 : 0,
     accuracyM: Number(raw.accuracyM) || null,
